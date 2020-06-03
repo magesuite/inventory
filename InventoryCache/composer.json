@@ -4,7 +4,7 @@
     "require": {
         "php": "~7.3.0||~7.4.0",
         "magento/framework": "*",
-        "magento/module-inventory-indexer": "*"
+        "magento/module-inventory-indexer": "2.0.*"
     },
     "suggest": {
         "magento/module-catalog": "*"
@@ -21,5 +21,6 @@
         "psr-4": {
             "Magento\\InventoryCache\\": ""
         }
-    }
+    },
+    "version": "1.1.0-alpha5"
 }

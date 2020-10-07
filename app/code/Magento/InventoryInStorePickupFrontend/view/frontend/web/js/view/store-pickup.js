@@ -209,7 +209,7 @@ define([
             }
         },
         isStorePickupAddress: function(address) {
-            return address.getType() === 'store-pickup-address';
+            return address && address.getType() === 'store-pickup-address';
         },
     });
 });

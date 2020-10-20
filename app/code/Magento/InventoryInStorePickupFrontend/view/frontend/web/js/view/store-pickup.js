@@ -15,6 +15,7 @@ define([
     'Magento_Checkout/js/model/shipping-service',
     'Magento_Checkout/js/model/step-navigator',
     'Magento_Checkout/js/model/shipping-rate-service',
+    'Magento_Checkout/js/model/address-converter',
     'Magento_InventoryInStorePickupFrontend/js/model/shipping-rate-processor/store-pickup-address',
     'Magento_InventoryInStorePickupFrontend/js/model/pickup-locations-service',
 ], function(
@@ -29,6 +30,7 @@ define([
     shippingService,
     stepNavigator,
     shippingRateService,
+    addressConverter,
     shippingRateProcessor,
     pickupLocationsService
 ) {
@@ -115,13 +117,15 @@ define([
 
             this.selectShippingMethod(nonPickupShippingMethod);
 
-            registry.async('checkoutProvider')(function(checkoutProvider) {
-                checkoutProvider.set(
-                    'shippingAddress',
-                    quote.shippingAddress()
-                );
-                checkoutProvider.trigger('data.reset');
-            });
+            if(checkoutData.getSelectedShippingAddress() === 'store-pickup-address') {
+                registry.async('checkoutProvider')(function(checkoutProvider) {
+                    checkoutProvider.set(
+                        'shippingAddress',
+                        addressConverter.formAddressDataToQuoteAddress({})
+                    );
+                    checkoutProvider.trigger('data.reset');
+                });
+            }
         },
         selectStorePickup: function() {
             var pickupShippingMethod = _.find(
@@ -143,15 +147,13 @@ define([
          */
         selectShippingMethod: function(shippingMethod) {
             selectShippingMethodAction(shippingMethod);
-            checkoutData.setSelectedShippingAddress(
-                quote.shippingAddress().getKey()
-            );
         },
         convertAddressType: function(shippingAddress) {
             if (
                 !this.isStorePickupAddress(shippingAddress) &&
                 this.isStorePickupSelected()
             ) {
+
                 quote.shippingAddress(
                     $.extend({}, shippingAddress, {
                         canUseForBilling: function() {
